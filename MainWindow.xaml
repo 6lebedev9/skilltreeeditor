@@ -1,0 +1,121 @@
+﻿<Window x:Class="SkillTreeEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Skill Tree Editor" Height="600" Width="1000"
+        KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Левая панель управления -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Background="#f0f0f0" Margin="5">
+                <!-- Управление камерой -->
+                <GroupBox Header="Управление камерой" Margin="5">
+                    <StackPanel>
+                        <TextBlock Text="Масштаб:" Margin="0,0,0,5"/>
+                        <Slider x:Name="ScaleSlider" Minimum="0.1" Maximum="3" 
+                                Value="1" SmallChange="0.1" Margin="0,0,0,10"
+                                ValueChanged="ScaleSlider_ValueChanged"/>
+
+                        <TextBlock Text="Позиция X:" Margin="0,0,0,5"/>
+                        <DockPanel>
+                            <Slider x:Name="CameraXSlider" Minimum="-5000" Maximum="5000" 
+                                    Margin="0,0,5,0" ValueChanged="CameraXSlider_ValueChanged"/>
+                            <TextBox x:Name="CameraXTextBox" Width="60" 
+                                     Text="{Binding Value, ElementName=CameraXSlider, StringFormat={}{0:0}}"/>
+                        </DockPanel>
+
+                        <TextBlock Text="Позиция Y:" Margin="0,5,0,5"/>
+                        <DockPanel>
+                            <Slider x:Name="CameraYSlider" Minimum="-5000" Maximum="5000" 
+                                    Margin="0,0,5,0" ValueChanged="CameraYSlider_ValueChanged"/>
+                            <TextBox x:Name="CameraYTextBox" Width="60" 
+                                     Text="{Binding Value, ElementName=CameraYSlider, StringFormat={}{0:0}}"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Редактор ноды -->
+                <GroupBox Header="Редактор ноды" Margin="5">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="ID:" VerticalAlignment="Center"/>
+                            <TextBox x:Name="NodeIdTextBox" Grid.Column="1" Margin="5,0,0,0"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="X:" VerticalAlignment="Center"/>
+                            <TextBox x:Name="NodeXTextBox" Grid.Column="1" Margin="5,0,0,0"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Y:" VerticalAlignment="Center"/>
+                            <TextBox x:Name="NodeYTextBox" Grid.Column="1" Margin="5,0,0,0"/>
+                        </Grid>
+
+                        <TextBlock Text="Тип ноды:" Margin="0,5,0,0"/>
+                        <ComboBox x:Name="NodeTypeComboBox" Margin="0,0,0,10" SelectedIndex="0">
+                            <ComboBoxItem Tag="Default">Default (круг)</ComboBoxItem>
+                            <ComboBoxItem Tag="Mastery">Mastery (треугольник)</ComboBoxItem>
+                            <ComboBoxItem Tag="Stat">Stat (ромб)</ComboBoxItem>
+                        </ComboBox>
+
+                        <TextBlock Text="Группа:" Margin="0,0,0,5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="GroupIdTextBox" Width="100" Margin="0,0,5,0"/>
+                            <Button Content="Применить" Click="ApplyGroupButton_Click" Width="80"/>
+                        </StackPanel>
+
+                        <TextBlock Text="Связи:" Margin="0,5,0,0"/>
+                        <ListBox x:Name="NodeConnectionsListBox" Height="100" Margin="0,0,0,5"/>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Content="Добавить связь" Click="AddConnectionButton_Click" Margin="0,0,5,0"/>
+                            <Button Content="Удалить связь" Click="RemoveConnectionButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <Button Content="Сохранить изменения" Click="SaveNodeButton_Click"
+                        Margin="5" HorizontalAlignment="Stretch" Height="30"
+                        Background="#87cefa" FontWeight="Bold"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Область отрисовки -->
+        <ScrollViewer Grid.Column="1" x:Name="MainScrollViewer" 
+                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas x:Name="MainCanvas" Background="White"
+                    Width="{Binding ActualWidth, ElementName=MainScrollViewer}"
+                    Height="{Binding ActualHeight, ElementName=MainScrollViewer}"
+                    MouseWheel="MainCanvas_MouseWheel"
+                    MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown"
+                    MouseRightButtonDown="MainCanvas_MouseRightButtonDown"
+                    MouseMove="MainCanvas_MouseMove"
+                    MouseLeftButtonUp="MainCanvas_MouseLeftButtonUp"
+                    MouseRightButtonUp="MainCanvas_MouseRightButtonUp">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+            </Canvas>
+        </ScrollViewer>
+    </Grid>
+</Window>
